@@ -1,0 +1,27 @@
+<form>
+
+  <div class="mx-auto mt-10 max-w-2xl rounded-xl border p-8 shadow-sm transition-all
+            bg-white border-slate-200 text-slate-900
+            dark:bg-[#0f172a] dark:border-purple-600 dark:text-white">
+
+    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+
+      <input type="text"
+             placeholder="nome da banda"
+             class="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none transition-all
+                  bg-white text-slate-900
+                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500
+                  dark:border-slate-700 dark:focus:border-purple-500 dark:bg-slate-800/50 dark:text-white"/>
+
+      <button class="cursor-pointer rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white
+                     transition-colors hover:bg-indigo-700 active:scale-95"
+              type="button"
+              (click)="create()">
+        Create
+      </button>
+
+    </div>
+
+  </div>
+
+</form>

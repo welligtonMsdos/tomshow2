@@ -1,1 +1,145 @@
-/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+@import "tailwindcss";
+
+.dark {
+  color-scheme: dark;
+}
+
+@layer base {
+  :root {
+    --color-slate-50: #f8fafc;
+    --color-slate-700: #334155;
+  }
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-card-left-padrao{
+  border-left: 4px solid var(--color-terceiraria) !important;
+}
+
+.mat-card-left-success{
+  padding: 0;
+  overflow: hidden;
+}
+
+.icon{
+  font-size: 1.2rem;
+}
+
+.icon-padrao{
+  color: var(--color-primaria) !important;
+}
+
+.icon-excluir{
+  color: var(--color-error) !important;
+}
+
+.mat-padrao {
+  background-color: var(--color-primaria) !important;
+  color: #fff !important;
+}
+
+.mat-error {
+  background-color: var(--color-error) !important;
+  color: var(--text-error) !important;
+}
+
+.mat-default {
+  background: linear-gradient(to right, #00539f, #cd072e) !important;
+  color: white !important;
+  width: 200px;
+}
+
+.width-full {
+  width: 100%;
+}
+
+.mr-5{
+  margin-right: 5px;
+}
+
+.mr-10{
+  margin-right: 10px;
+}
+
+.mr-20{
+  margin-right: 20px;
+}
+
+.mb-5{
+  margin-bottom: 5px;
+}
+
+.hidden-column {
+  display: none;
+}
+
+.width-full {
+  width: 100%;
+}
+
+/* Estilo para SnackBar de Sucesso */
+.success-snake {
+  /* Variáveis modernas do Angular Material/MDC */
+  --mdc-snackbar-container-color: #4caf50 !important;
+  --mdc-snackbar-label-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+}
+
+/* Forçando para navegadores que não processam as variáveis acima */
+.success-snake.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: #4caf50 !important;
+}
+
+/* Estilo para SnackBar de Erro */
+.error-snake {
+  --mdc-snackbar-container-color: #f44336 !important;
+  --mdc-snackbar-label-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+}
+
+.error-snake.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: #f44336 !important;
+}
+
+mat-card {
+  padding-left: 16px;
+  margin-top: 5px;
+}
+
+h5{
+  font-size: 1.5rem;
+  color: var(--color-primaria);
+}
+
+h4{
+  color: var(--color-primaria2);
+}
+
+h2{
+  color: var(--color-primaria);
+}
+
+:root {
+  --color-primaria: #00539f;
+  --color-secudaria: #ba0000;
+  --color-primaria2: #0371d8;
+  --color-success: #d8f0e1;
+  --text-success: #4F8A10;
+  --color-error: #EA0038;
+  --text-error: #FFF;
+  --color-warning: #FEEFb3;
+  --text-warning: #9F6000;
+  --color-info: #D9EDF7;
+  --text-info: #31708F;
+  --color-terceiraria: #5e148f;
+  --mat-toolbar-container-text-color: #fff;
+}

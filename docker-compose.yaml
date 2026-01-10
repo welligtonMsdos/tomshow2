@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build: .
+    container_name: tomshow_frontend
+    ports:
+      - "4200:4200"
+    networks:
+      - tom-auth-net
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+networks:
+  tom-auth-net:
+    driver: bridge

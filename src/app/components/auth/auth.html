@@ -18,7 +18,7 @@
 
       <div class="relative lg:row-span-2">
 
-        <form>
+        <form [formGroup]="authForm">
 
           <div class="mx-auto mt-10 max-w-2xl rounded-xl border p-8 shadow-sm transition-all
                     bg-white border-slate-200 text-slate-900
@@ -28,22 +28,42 @@
 
                   <input type="email"
                          placeholder="Email"
+                         formControlName="email"
+                         (blur)="updateErrorMessage()"
+                         required
                          class="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none transition-all
                               bg-white text-slate-900
                               focus:border-purple-500 focus:ring-1 focus:ring-purple-500
                               dark:border-slate-700 dark:focus:border-purple-500 dark:bg-slate-800/50 dark:text-white"/>
-
               </div>
+
+               <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+                  @if(authForm.get('email')?.invalid && authForm.get('email')?.touched){
+                    <div class="text-red-600 dark:text-red-300 text-sm mt-1 ml-2">Email inválido.</div>
+                  }
+               </div>
 
               <div class="mt-6 flex flex-col gap-3 sm:flex-row">
 
                 <input type="password"
-
-                         placeholder="Senha"
-                         class="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none transition-all
+                       placeholder="Senha"
+                       formControlName="password"
+                       (blur)="updateErrorMessage()"
+                       required
+                       class="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none transition-all
                               bg-white text-slate-900
                               focus:border-purple-500 focus:ring-1 focus:ring-purple-500
                               dark:border-slate-700 dark:focus:border-purple-500 dark:bg-slate-800/50 dark:text-white"/>
+
+
+
+              </div>
+
+              <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+
+                @if(authForm.get('password')?.invalid && authForm.get('password')?.touched){
+                  <div class="text-red-600 dark:text-red-300 text-sm mt-1 ml-2">Senha inválida.</div>
+                }
 
               </div>
 
@@ -51,7 +71,8 @@
 
                 <button class="cursor-pointer rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white
                                transition-colors hover:bg-indigo-700 active:scale-95"
-                          type="button">
+                          type="button"
+                          (click)="login()">
                            <i class="pi pi-sign-in mr-3"></i> Entrar
                 </button>
 

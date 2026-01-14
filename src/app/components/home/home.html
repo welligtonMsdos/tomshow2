@@ -4,7 +4,26 @@
 
   <h5 class="text-2xl font-bold dark:text-white dark:bg-slate-700">Home</h5>
 
+  <p class="mt-4 text-base leading-7">
 
+    @if (loginService.currentUser(); as user) {
+    <header>
+      <h1>Olá, {{ user.name }}!</h1>
+      <p>Logado com o e-mail: <strong>{{ user.email }}</strong></p>
+    </header>
+
+    <main>
+      <p>Conteúdo exclusivo da sua conta.</p>
+    </main>
+  }@else {
+    <div class="mb-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+
+      <p>Por favor, faça login para acessar mais recursos.</p>
+
+    </div>
+  }
+
+  </p>
 
 </div>
 

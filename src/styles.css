@@ -110,6 +110,29 @@ body {
   background-color: #f44336 !important;
 }
 
+.success-snake {
+  /* Variáveis modernas do Angular Material/MDC */
+  --mdc-snackbar-container-color: #4caf50 !important;
+  --mdc-snackbar-label-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+}
+
+/* Forçando para navegadores que não processam as variáveis acima */
+.success-snake.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: #4caf50 !important;
+}
+
+/* Estilo para SnackBar de Erro */
+.error-snake {
+  --mdc-snackbar-container-color: #f44336 !important;
+  --mdc-snackbar-label-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+}
+
+.error-snake.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: #f44336 !important;
+}
+
 mat-card {
   padding-left: 16px;
   margin-top: 5px;

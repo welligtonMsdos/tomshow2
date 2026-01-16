@@ -24,6 +24,13 @@
 
   <button class="mr-2 flex transition-transform hover:scale-125 align-middle"
           mat-icon-button
+          aria-label="Logout"
+          (click)="logout()">
+    <span class="material-icons text-white">logout</span>
+  </button>
+
+  <button class="mr-2 flex transition-transform hover:scale-125 align-middle"
+          mat-icon-button
           aria-label="Settings"
     (click)="themeService.toggleTheme()">
 

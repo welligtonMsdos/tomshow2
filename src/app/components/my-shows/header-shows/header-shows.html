@@ -1,27 +1,45 @@
-<form>
+  <header class="flex flex-col sm:flex-row items-center justify-between gap-4 p-6
+               bg-white dark:bg-slate-900 border-b border-slate-200
+                 dark:border-slate-800 transition-colors duration-300">
 
-  <div class="mx-auto mt-10 max-w-2xl rounded-xl border p-8 shadow-sm transition-all
-            bg-white border-slate-200 text-slate-900
-            dark:bg-[#0f172a] dark:border-purple-600 dark:text-white">
+  <div class="flex items-center gap-8">
 
-    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+    <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
+      Shows
+    </h1>
 
-      <input type="text"
-             placeholder="nome da banda"
-             class="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none transition-all
-                  bg-white text-slate-900
-                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500
-                  dark:border-slate-700 dark:focus:border-purple-500 dark:bg-slate-800/50 dark:text-white"/>
-
-      <button class="cursor-pointer rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white
-                     transition-colors hover:bg-indigo-700 active:scale-95"
-              type="button"
-              (click)="create()">
-        Create
+    <nav class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+      <button
+        type="button"
+        class="cursor-pointer transition-all px-4 py-2 text-sm font-medium rounded-md"
+        (click)="setTab('upcoming')"
+        [ngClass]="ticketService.currentFilter() === 'upcoming'
+        ? 'shadow-sm bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400'
+        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+      >
+        Em Breve
       </button>
 
-    </div>
+      <button
+        type="button"
+        class="cursor-pointer transition-all px-4 py-2 text-sm font-medium rounded-md"
+        (click)="setTab('past')"
+        [ngClass]="ticketService.currentFilter() === 'past'
+        ? 'shadow-sm bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400'
+        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+      >
+        Encerrados
+      </button>
+    </nav>
 
   </div>
 
-</form>
+  <button class="cursor-pointer rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white
+                     transition-colors hover:bg-indigo-700 active:scale-95"
+          type="button"
+          (click)="create()">
+          <i class="pi pi-plus mr-2"></i> Novo Show
+  </button>
+
+</header>
+

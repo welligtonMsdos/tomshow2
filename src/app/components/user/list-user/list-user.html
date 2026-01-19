@@ -1,0 +1,109 @@
+  <div class="p-6 bg-gray-50 dark:bg-gray-900">
+
+    <div class="max-w-5xl mx-auto">
+
+      <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 shadow-md">
+
+        <table class="w-full border-collapse bg-white dark:bg-gray-800 text-left text-sm text-gray-500 dark:text-gray-400">
+
+          <thead class="bg-gray-50 dark:bg-gray-800">
+
+            <tr>
+              <th class="px-6 py-4 font-medium text-gray-900 dark:text-white">Nome</th>
+              <th class="px-6 py-4 font-medium text-gray-900 dark:text-white">Email</th>
+              <th class="px-6 py-4 font-medium text-gray-900 dark:text-white"></th>
+            </tr>
+
+          </thead>
+
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700 border-t border-gray-100 dark:border-gray-700">
+
+            @for (u of paginatedUsers; track u._id) {
+
+               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+
+                <td class="px-6 py-4 underline decoration-indigo-500/30 underline-offset-4 text-gray-700 dark:text-gray-300">
+                  {{ u.name }}
+                </td>
+
+                <td class="px-6 py-4 underline decoration-indigo-500/30 underline-offset-4 text-gray-700 dark:text-gray-300">
+                  {{ u.email }}
+                </td>
+
+                <td class="px-6 py-2">
+
+                  <div class="flex justify-end gap-4">
+
+                    <button title="Editar" class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer">
+                      <i class="pi pi-pen-to-square"></i>
+                    </button>
+
+                    <button title="Excluir" class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 cursor-pointer">
+                      <i class="pi pi-trash"></i>
+                    </button>
+
+                  </div>
+
+                </td>
+
+               </tr>
+
+            }
+
+            @if(users.length === 0 && !isLoading) {
+              <tr>
+                <td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">
+                  Nenhum usuário encontrado.
+                </td>
+              </tr>
+            }
+
+          </tbody>
+
+        </table>
+
+        <div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4">
+
+          <div class="hidden sm:block">
+            <p class="text-sm text-gray-700 dark:text-gray-400">
+              Mostrando <span class="font-medium">{{ (currentPage - 1) * itemsPerPage + 1 }}</span> a
+              <span class="font-medium">{{ Math.min(currentPage * itemsPerPage, users.length) }}</span> de
+              <span class="font-medium">{{ users.length }}</span> resultados
+            </p>
+          </div>
+
+          <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+
+            <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
+                    class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors">
+                   <i class="pi pi-chevron-left text-xs"></i>
+            </button>
+
+            @for (page of pageNumbers; track page) {
+              <button (click)="goToPage(page)"
+                [class.bg-indigo-600]="currentPage === page"
+                [class.text-white]="currentPage === page"
+                [class.dark:bg-indigo-500]="currentPage === page"
+                [class.text-gray-900]="currentPage !== page"
+                [class.dark:text-gray-200]="currentPage !== page"
+                class="relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset
+                    ring-gray-300 dark:ring-gray-600 hover:bg-gray-400 hover:text-blue-800 dark:hover:bg-gray-700 focus:z-20 transition-all">
+                  {{ page }}
+              </button>
+            }
+
+            <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                     class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors">
+                    <i class="pi pi-chevron-right text-xs"></i>
+            </button>
+
+          </nav>
+
+        </div>
+
+      </div>
+
+  </div>
+
+</div>
+

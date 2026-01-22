@@ -8,7 +8,7 @@
     </div>
   }
 
-    @for (item of ticketService.tickets().data; track item.guid) {
+    @for (item of ticketService.ticketList(); track item.guid) {
 
       <div class="rounded-lg border shadow-sm transition-all
                   bg-white border-slate-200

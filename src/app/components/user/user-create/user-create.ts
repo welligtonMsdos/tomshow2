@@ -1,0 +1,82 @@
+import { Component, signal, output, inject } from '@angular/core';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { UserService } from '../../../service/user.service';
+import { UserCreateDto } from '../../../domain/userCreate.model';
+import { AlertService } from '../../../service/alert.service';
+
+@Component({
+  selector: 'app-user-create',
+  imports: [ReactiveFormsModule],
+  templateUrl: './user-create.html',
+  styleUrl: './user-create.css',
+})
+export class UserCreate {
+
+  private fb = inject(FormBuilder);
+  private userService = inject(UserService);
+  private alert = inject(AlertService);
+  close = output<void>();
+  saved = output<any>();
+
+  updateErrorMessage = () => {};
+
+  errorMessage = signal<string | null>(null);
+
+  isLoading = signal(false);
+
+  userForm = this.fb.group({
+    nome: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    senha: ['', [Validators.required, Validators.minLength(6)]],
+    confirmaSenha: ['', Validators.required]
+  }, {
+    validators: (group) => group.get('senha')?.value === group.get('confirmaSenha')?.value ? null : { mismatch: true }
+  });
+
+  save() {
+
+    if (this.userForm.valid) {
+
+      this.isLoading.set(true);
+
+      this.errorMessage.set(null);
+
+      const { nome, email, senha } = this.userForm.getRawValue();
+      const userData: UserCreateDto = {
+        name: nome || '',
+        email: email || '',
+        password: senha || ''
+      };
+
+      this.userService.addNewUser(userData).subscribe({
+        next: (response) => {
+
+          if (response.success) {
+            this.alert.showSuccess(response.message || 'Cadastro realizado com sucesso!');
+          }
+
+          this.saved.emit(response.data);
+
+          this.close.emit();
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+
+          const apiErrors = err.error?.errors;
+
+          if (apiErrors) {
+
+            const messages = Object.values(apiErrors).flat() as string[];
+
+            this.errorMessage.set(messages.join(' | '));
+
+            //this.alert.showError(messages.join(' | '));
+          } else {
+            this.errorMessage.set(err.error?.message || 'Erro desconhecido no servidor.');
+          }
+        }
+      });
+    }
+  }
+
+}

@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { UserCreate } from "../user-create/user-create";
 
 @Component({
   selector: 'app-header-user',
-  imports: [],
+  imports: [UserCreate],
   templateUrl: './header-user.html',
   styleUrl: './header-user.css',
 })
 export class HeaderUser {
+
+  showModal = signal(false);
 
 }

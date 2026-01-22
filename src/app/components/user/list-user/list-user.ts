@@ -1,54 +1,122 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { UserService } from '../../../service/user.service';
+import { DeleteData } from '../../shared/delete-data/delete-data';
+import { AlertService } from '../../../service/alert.service';
 import { UserDto } from '../../../domain/user.model';
+import { UserUpdate } from "../user-update/user-update";
 
 @Component({
   selector: 'app-list-user',
-  imports: [],
+  imports: [DeleteData, UserUpdate],
   templateUrl: './list-user.html',
   styleUrl: './list-user.css',
 })
 export class ListUser implements OnInit {
 
-    users: UserDto[] = [];
-    isLoading = true;
+  private alert = inject(AlertService);
+  protected userService = inject(UserService);
+  protected readonly Math = Math;
 
-    currentPage = 1;
-    itemsPerPage = 5;
-    protected readonly Math = Math;
+  usuarioSelecionado = signal<UserDto | null>(null);
+  exibirModalUpdate = signal(false);
+  searchTerm = signal('');
+  isLoading = signal(true);
+  currentPage = signal(1);
+  itemsPerPage = signal(5);
+  exibirModal = signal(false);
+  idSelecionado = signal('');
 
-    constructor(private userService: UserService) {}
+  filteredUsers = computed(() => {
+  const term = this.searchTerm().toLowerCase().trim(); // Adicionei o trim()
+  const allUsers = this.userService.users() || []; // Garante que não é null
 
-    ngOnInit(): void {
-    this.userService.getAllUsers().subscribe({
-      next: (response) => {
+  if (!term) return allUsers;
 
-        if (response.success) {
-          this.users = response.data;
-        }
-        this.isLoading = false;
-      },
-      error: () => this.isLoading = false
+  return allUsers.filter(user =>
+      // Use o operador ?. para evitar erros se name ou email vierem nulos
+      user.name?.toLowerCase().includes(term) ||
+      user.email?.toLowerCase().includes(term)
+    );
+  });
+
+  editarUsuario(id: string) {
+  this.isLoading.set(true);
+
+  this.userService.getUserById(id).subscribe({
+    next: (response) => {
+      if (response.success && response.data) {
+        this.usuarioSelecionado.set(response.data);
+        this.exibirModalUpdate.set(true);
+      }
+      this.isLoading.set(false);
+    },
+    error: () => {
+      this.alert.showError('Erro ao carregar dados do usuário.');
+      this.isLoading.set(false);
+      }
     });
   }
 
-  get pageNumbers(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  paginatedUsers = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.itemsPerPage();
+    return this.filteredUsers().slice(startIndex, startIndex + this.itemsPerPage());
+  });
+
+  totalPages = computed(() => {
+    const total = Math.ceil(this.filteredUsers().length / this.itemsPerPage());
+    return total > 0 ? total : 1; // Garante que pelo menos a página 1 exista
+  });
+
+  pageNumbers = computed(() => {
+    const pages = this.totalPages();
+    return Array.from({ length: pages }, (_, i) => i + 1);
+  });
+
+  onSearch(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchTerm.set(value);
+    this.currentPage.set(1); // Volta para a página 1 ao pesquisar
   }
 
-  get paginatedUsers() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.users.slice(startIndex, startIndex + this.itemsPerPage);
-  }
-
-  get totalPages() {
-    return Math.ceil(this.users.length / this.itemsPerPage);
+  ngOnInit(): void {
+    this.userService.getAllUsers().subscribe({
+      next: () => this.isLoading.set(false),
+      error: () => this.isLoading.set(false)
+    });
   }
 
   goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
     }
+  }
+
+  prepararExclusao(id: string) {
+    this.idSelecionado.set(id);
+    this.exibirModal.set(true);
+  }
+
+  executarExclusao() {
+    this.isLoading.set(true);
+    const id = this.idSelecionado();
+
+    this.userService.deleteUser(id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.alert.showSuccess('Usuário excluído com sucesso.');
+        }
+        this.finalizarAcao();
+      },
+      error: () => {
+        this.alert.showError('Erro ao excluir usuário.');
+        this.finalizarAcao();
+      }
+    });
+  }
+
+  private finalizarAcao() {
+    this.isLoading.set(false);
+    this.exibirModal.set(false);
   }
 
 }

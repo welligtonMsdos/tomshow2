@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { TicketService } from '../../../service/ticket.service';
 import { CommonModule } from '@angular/common';
+import { AlertService } from '../../../service/alert.service';
 
 @Component({
   selector: 'app-header-shows',
@@ -12,6 +13,8 @@ export class HeaderShows {
 
   activeTab = signal<'upcoming' | 'past'>('upcoming');
 
+  private alert = inject(AlertService);
+
   constructor(public ticketService: TicketService) {}
 
   setTab(tab: 'upcoming' | 'past') {
@@ -19,9 +22,7 @@ export class HeaderShows {
   }
 
   create(){
-    alert('Create Show clicked!');
+    this.alert.showSuccess('Show criado com sucesso!');
   }
-
-
 
 }

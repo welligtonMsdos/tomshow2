@@ -20,6 +20,4 @@ export class Tickets {
 
     constructor(public ticketService: TicketService) {}
 
-
-
 }

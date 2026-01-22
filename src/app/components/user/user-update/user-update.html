@@ -1,0 +1,76 @@
+<div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+  <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700">
+    <div class="relative h-4 bg-linear-to-r from-blue-500 to-purple-600 rounded-t-xl"></div>
+
+    <div class="px-6 pb-6 pt-2">
+      <header>
+        <h2 class="text-xl mb-4 mt-4 font-bold text-slate-800 dark:text-white">
+          <i class="pi pi-user-edit mr-3 text-blue-500"></i>Editando usuário
+        </h2>
+      </header>
+
+      @if (errorMessage()) {
+        <div class="mb-4 flex flex-col p-3 text-red-800 rounded-lg bg-red-50 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800" role="alert">
+          <div class="flex items-center">
+            <i class="pi pi-exclamation-circle mr-2 font-bold"></i>
+            <span class="text-xs font-bold uppercase">Erro ao atualizar</span>
+            <button (click)="errorMessage.set(null)" class="ml-auto text-red-500 hover:text-red-700">
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+          <p class="text-sm mt-1 ml-6">{{ errorMessage() }}</p>
+        </div>
+      }
+
+      <div class="mt-1">
+        <form [formGroup]="userForm" (ngSubmit)="save()" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Nome</label>
+            <input type="text"
+                   formControlName="nome"
+                   placeholder="Nome completo"
+                   class="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none transition-all
+                          bg-white text-slate-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                          dark:border-slate-700 dark:bg-slate-800/50 dark:text-white" />
+            @if(userForm.get('nome')?.invalid && userForm.get('nome')?.touched){
+              <span class="text-red-500 text-xs mt-1 block">O nome é obrigatório.</span>
+            }
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">E-mail</label>
+            <input type="email"
+                   formControlName="email"
+                   placeholder="exemplo@email.com"
+                   class="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none transition-all
+                          bg-white text-slate-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                          dark:border-slate-700 dark:bg-slate-800/50 dark:text-white" />
+            @if(userForm.get('email')?.invalid && userForm.get('email')?.touched){
+              <span class="text-red-500 text-xs mt-1 block">Insira um e-mail válido.</span>
+            }
+          </div>
+
+          <div class="mt-8 flex gap-3">
+            <button type="button"
+                    (click)="close.emit()"
+                    class="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700
+                           transition-colors hover:bg-gray-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700 cursor-pointer">
+              Cancelar
+            </button>
+
+            <button type="submit"
+                    [disabled]="userForm.invalid || isLoading()"
+                    class="flex-1 rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white
+                           transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+              @if (isLoading()) {
+                <i class="pi pi-spin pi-spinner mr-2"></i> Atualizando...
+              } @else {
+                <i class="pi pi-check mr-2"></i> Salvar Alterações
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -12,12 +12,25 @@ import { ShowDto } from '../domain/show.model';
 export class TicketService {
 
   private apiUrl = 'http://localhost:5012/api/';
-
   private filterSignal = signal<'upcoming' | 'past'>('upcoming');
 
   public loading = signal<boolean>(false);
+  public currentFilter = this.filterSignal.asReadonly();
 
-  currentFilter = this.filterSignal.asReadonly();
+  // Defina o valor inicial fora para facilitar a leitura e tipagem
+  private readonly initialResult: Result<ShowDto[]> = {
+    data: [],
+    success: true,
+    message: '',
+    errors: {}
+  };
+
+  public tickets = toSignal(
+    toObservable(this.filterSignal).pipe(
+      switchMap(filter => this.fetchTicketsFromApi(filter))
+    ),
+    { initialValue: this.initialResult }
+  );
 
   constructor(private http: HttpClient) {}
 
@@ -25,31 +38,25 @@ export class TicketService {
     this.filterSignal.set(filter);
   }
 
-  tickets = toSignal(
-    toObservable(this.filterSignal).pipe(
-      switchMap(filter => this.fetchTicketsFromApi(filter))
-    ),
-    {
-    initialValue: {
-      data: [] as ShowDto[],
-      success: true,
-      message: '', // Adicionado para satisfazer a interface
-      errors: []   // Adicionado para satisfazer a interface
-    } as Result<ShowDto[]>
+  public ticketList = computed(() => this.tickets().data);
+
+  private fetchTicketsFromApi(status: string): Observable<Result<ShowDto[]>> {
+    this.loading.set(true);
+    const endpoint = status === 'past' ? 'GetAllShowsPast' : 'GetAllShowsUpcoming';
+
+    return this.http.get<Result<ShowDto[]>>(`${this.apiUrl}Show/${endpoint}`).pipe(
+      tap(() => this.loading.set(false)),
+      catchError((err) => {
+        this.loading.set(false);
+        // CORREÇÃO: Retorne um Observable do objeto, não um array dentro de um array
+        return [ {
+          ...this.initialResult,
+          success: false,
+          message: 'Não foi possível carregar os shows.',
+          errors: err
+        } ];
+      })
+    );
   }
-  );
-
-  private fetchTicketsFromApi(status: string) {
-  this.loading.set(true); // Começa o loading
-  const endpoint = status === 'past' ? 'GetAllShowsPast' : 'GetAllShowsUpcoming';
-
-  return this.http.get<Result<ShowDto[]>>(`${this.apiUrl}Show/${endpoint}`).pipe(
-    tap(() => this.loading.set(false)),
-    catchError((err) => {
-      this.loading.set(false);
-      throw err;
-    })
-  );
-}
 
 }

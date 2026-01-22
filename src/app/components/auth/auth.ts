@@ -1,14 +1,13 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { LoginService } from '../../service/login.service';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { AlertService } from '../../service/alert.service';
 @Component({
   selector: 'app-auth',
   imports: [FormsModule,
-            ReactiveFormsModule,
-            MatSnackBarModule
+            ReactiveFormsModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './auth.html',
@@ -23,9 +22,10 @@ export class Auth {
 
   errorMessage = signal('');
 
+  private alert = inject(AlertService);
+
   constructor(private loginService: LoginService,
-              private router: Router,
-              private snackBar: MatSnackBar
+              private router: Router
   ) {}
 
   updateErrorMessage = () => {};
@@ -49,37 +49,14 @@ export class Auth {
         .then(data =>{
           if (data.success) {
 
-            this.openSnackBar('Bem Vindo ' + this.loginService.currentUser()?.name, 'Fechar', 'success');
+            this.alert.showSuccess('Bem Vindo ' + this.loginService.currentUser()?.name);
 
             this.router.navigate(['/home']);
-          }
-          else{
-
-            if(data.message){
-              //this.errorMessage.set(data.message);
-
-              this.openSnackBar(data.message ?? '', 'Fechar', 'error');
-
-            }
           }
         })
         .catch(err => this.errorMessage.set('An error occurred during login. Please try again later.'));
     }
 
-  }
-
-  private openSnackBar(message: string, action: string, type: 'success' | 'error') {
-
-    const className = type === 'success' ? 'success-snake' : 'error-snake';
-
-    if (this.snackBar) {
-      this.snackBar.open(message, action, {
-        duration: 3000,
-        horizontalPosition: 'right',
-        verticalPosition: 'top',
-        panelClass: [className]
-      });
-    }
   }
 
 }

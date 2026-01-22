@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { UserLoginDto } from '../domain/user-login-dto';
 import { ApiResponse } from '../domain/api-response';
 import { firstValueFrom } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-
+import { Result } from '../domain/result.model';
+import { AlertService } from './alert.service';
 interface UserPayload {
   name: string;
   email: string;
@@ -22,7 +23,10 @@ export class LoginService {
 
    currentUser = computed(() => this.userSignal());
 
-   constructor(private http: HttpClient) {
+    private alert = inject(AlertService);
+
+   constructor(private http: HttpClient
+   ) {
     this.getUserFromToken();
    }
 
@@ -44,26 +48,36 @@ export class LoginService {
     this.userSignal.set(null);
   }
 
-   async login(userLoginDto: UserLoginDto): Promise<ApiResponse> {
+  async login(userLoginDto: UserLoginDto): Promise<Result<ApiResponse>> {
+  try {
+    const response = await firstValueFrom(
+      this.http.post<Result<any>>(this.apiUrl + "Login", userLoginDto)
+    );
 
-    try {
+    if (response.success && response.data) {
 
-      const response = await firstValueFrom(
-        this.http.post<ApiResponse>(this.apiUrl + "Login", userLoginDto)
-      )
+      const jwt = response.data.result;
 
-      if (response.data?.result) {
-        localStorage.setItem('token', response.data.result);
+      if (jwt) {
+        localStorage.setItem('token', jwt);
         this.getUserFromToken();
       }
-
-      return response;
-
-    } catch (error) {
-        console.error('Login failed', error);
-        throw error;
     }
 
-   }
+    return response;
+
+  } catch (error: any) {
+    if (error.error) {
+
+      const backendError = error.error;
+
+      this.alert.showError(backendError.Errors ?? 'Erro ao realizar login');
+
+      throw backendError;
+    }
+    throw error;
+  }
+}
+
 
 }
